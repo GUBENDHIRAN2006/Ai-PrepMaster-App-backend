@@ -6,12 +6,12 @@ load_dotenv()
 
 class Settings:
     # -----------------------------------------------------------------------
-    # Database — defaults to local SQLite, switches to Supabase PostgreSQL
-    # when DATABASE_URL is set in .env
+    # Database — defaults to Supabase PostgreSQL for production.
+    # Set DATABASE_URL env var to override (e.g. for local dev with SQLite).
     # -----------------------------------------------------------------------
     DATABASE_URL: str = os.getenv(
         "DATABASE_URL",
-        "sqlite:///./interview_prep.db"   # fallback for local dev without Supabase
+        "postgresql://postgres.vzvsovwzyfqzimwwaipy:Gubendhiran%401000@aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres"
     )
 
     # JWT authentication configuration
