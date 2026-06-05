@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: ai-prepmaster-app-backend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        value: postgresql://postgres.vzvsovwzyfqzimwwaipy:Gubendhiran%401000@aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres
+      - key: SUPABASE_URL
+        value: https://vzvsovwzyfqzimwwaipy.supabase.co
+      - key: SUPABASE_KEY
+        value: sb_publishable_XNGuxmAydpjNXJqZafO5dg_bRhtdzd7
+      - key: JWT_SECRET
+        value: super-secret-key-change-this-in-production-random-string-12345
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "1440"
+      - key: OPENAI_API_KEY
+        value: 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
+      - key: ADMIN_EMAIL
+        value: admin@prepmaster.com
+      - key: ADMIN_PASSWORD
+        value: admin123
+      - key: ALLOWED_ORIGINS
+        value: https://frontend-five-delta-52.vercel.app,https://frontend-fh7q370ok-gubendhiran-s-projects.vercel.app,http://localhost:5173
