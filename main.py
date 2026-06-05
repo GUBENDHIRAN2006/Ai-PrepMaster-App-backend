@@ -97,9 +97,23 @@ app = FastAPI(title="AI Interview Prep API", version="2.0.0")
 # Enable CORS
 origins = [org.strip() for org in settings.ALLOWED_ORIGINS.split(",") if org.strip()]
 
+# Add newly deployed Vercel domains explicitly to allow_origins
+extra_origins = [
+    "https://frontend-five-delta-52.vercel.app",
+    "https://frontend-fh7q370ok-gubendhiran-s-projects.vercel.app"
+]
+for o in extra_origins:
+    if o not in origins:
+        origins.append(o)
+
+# Filter out '*' if allow_credentials is True to prevent FastAPI startup crash
+if "*" in origins:
+    origins = [o for o in origins if o != "*"]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
