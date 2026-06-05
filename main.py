@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException, status, UploadFile, File, F
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, text
 from typing import List, Optional
 import uvicorn
 import os
@@ -127,6 +127,26 @@ dist_assets = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "fro
 if os.path.exists(dist_assets):
     app.mount("/assets", StaticFiles(directory=dist_assets), name="assets")
 
+
+# --- DATABASE DIAGNOSTICS (PUBLIC) ---
+@app.get("/api/debug/db-status")
+def debug_db_status(db: Session = Depends(get_db)):
+    try:
+        db.execute(text("SELECT 1"))
+        return {
+            "status": "healthy",
+            "database_url_configured": settings.DATABASE_URL.split("@")[-1] if settings.DATABASE_URL else None,
+            "is_sqlite": is_sqlite
+        }
+    except Exception as e:
+        import traceback
+        return {
+            "status": "error",
+            "database_url_configured": settings.DATABASE_URL.split("@")[-1] if settings.DATABASE_URL else None,
+            "is_sqlite": is_sqlite,
+            "error": str(e),
+            "traceback": traceback.format_exc()
+        }
 
 # --- ADMIN CONTROL DEPENDENCY ---
 def get_current_admin(current_user: models.User = Depends(get_current_user)):
